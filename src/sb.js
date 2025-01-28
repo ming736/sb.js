@@ -2826,4 +2826,5 @@ sb.createCanvas = function (width, height) {
     sb.ObjectStream.prototype.squeakColors = colors;
 })();
 
+
 sb.Dict = function () { };
