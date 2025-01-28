@@ -34,7 +34,7 @@ if (isNode) {
  * @property {string?} os-version The OS version.
  * @property {string?} language The language code used when this project was last saved.
  * @property {string?} platform The platform used when this project was last saved.
- * @property {ScratchVersion?} scratch-version The version of `Scratch` that was used to save this project.
+ * @property {string?} scratch-version The version of `Scratch` that was used to save this project.
  */
 /**
  * @typedef {Object} BaseSprite
