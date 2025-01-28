@@ -39,7 +39,7 @@ if (isNode) {
 /**
  * @typedef {Object} BaseSprite
  * @property {string} objName The name of this sprite.
- * @property {Array<object>} sounds The sounds that this sprite has.
+ * @property {Array<Sound>} sounds The sounds that this sprite has.
  * @property {Array<Costume>} costumes The costumes that this sprite has.
  * @property {number} currentCostumeIndex The current costume index.
  * @property {Array<Variable>} variables The variables this sprite has.
@@ -57,7 +57,7 @@ if (isNode) {
 /**
  * @typedef {Object} Stage
  * @property {"Stage" | "Background"} objName The name of the stage.
- * @property {Array<object>} sounds The sounds that the stage has.
+ * @property {Array<Sound>} sounds The sounds that the stage has.
  * @property {Array<Costume>} costumes The costumes that the stage has.
  * @property {number} currentCostumeIndex The current backdrop index.
  * @property {Array<Variable>} variables The variables the stage has.
@@ -70,7 +70,7 @@ if (isNode) {
 /**
  * @typedef {Object} Sprite
  * @property {string} objName The name of this sprite.
- * @property {Array<object>} sounds The sounds that this sprite has.
+ * @property {Array<Sound>} sounds The sounds that this sprite has.
  * @property {Array<Costume>} costumes The costumes that this sprite has.
  * @property {number} currentCostumeIndex The current costume index.
  * @property {Array<Variable>} variables The variables this sprite has.
@@ -99,6 +99,12 @@ if (isNode) {
  * @property {number} rotationCenterX
  * @property {number} rotationCenterY
  * @property {import("canvas").Canvas} image
+ */
+/**
+ * Not implemented
+ * @typedef {Object} Sound
+ * @property {string} soundName The name of this sound.
+ * @property {null} sound Not implemented.
  */
 
 class Project {
