@@ -9,7 +9,6 @@ on:
 
 jobs:
   build:
-    if: "!github.event.release.prerelease"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,6 +29,12 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/
       - run: npm ci
+      - name: Publish to stable
+        if: github.event.release.prerelease == false
       - run: npm publish --access public
+      
+      - name: Publish to nightly
+        if: github.event.release.prerelease == true
+      - run: npm publish --access public --tag nightly
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
