@@ -24,7 +24,8 @@ function loadProjectFromPath(path) {
 var exportTable = {
     loadProjectFromBuffer,
     loadProjectFromPath,
-    version
+    version,
+    sb
 }
 
 module.exports = {
