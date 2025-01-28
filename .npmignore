@@ -5,3 +5,5 @@ src/
 examples/
 .github/
 tsconfig.json
+copy.js
+index.html
