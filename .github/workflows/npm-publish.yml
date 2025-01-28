@@ -17,8 +17,7 @@ jobs:
           node-version: 20
       - run: npm ci
       - run: npm test
-      # amazing
-      - run: mkdir -p ./dist && cp ./src/index.js ./dist/index.js && cp ./src/sb.js ./dist/sb.js
+      - run: npm run build
 
   publish-npm:
     needs: build
