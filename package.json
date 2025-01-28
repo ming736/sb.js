@@ -5,7 +5,8 @@
   "main": "./src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx tsc && node copy"
+    "build": "npx tsc && node copy",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",

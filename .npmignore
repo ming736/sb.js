@@ -4,3 +4,4 @@ out/
 src/
 examples/
 .github/
+tsconfig.json
