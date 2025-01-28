@@ -30,11 +30,11 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm ci
       - name: Publish to stable
-        if: github.event.release.prerelease == false
+        if: "!github.event.release.prerelease"
       - run: npm publish --access public
       
       - name: Publish to nightly
-        if: github.event.release.prerelease == true
+        if: "github.event.release.prerelease"
       - run: npm publish --access public --tag nightly
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
