@@ -1,0 +1,25 @@
+{
+  "name": "@ming736/sb.js",
+  "version": "0.4.3",
+  "description": "Library for reading and writing Scratch files",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ming736/sb.js.git"
+  },
+  "keywords": [
+    "scratch"
+  ],
+  "author": "ming736",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ming736/sb.js/issues"
+  },
+  "homepage": "https://github.com/ming736/sb.js#readme",
+  "dependencies": {
+    "canvas": "^3.1.0"
+  }
+}
