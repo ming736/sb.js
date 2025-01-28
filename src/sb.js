@@ -747,6 +747,12 @@ class ObjectStream {
                 }
             ]
         },
+        155: {
+            read: {
+                objName: 19
+            },
+            write: []
+        },
         162: {
             read: {
                 costumeName: 0,
