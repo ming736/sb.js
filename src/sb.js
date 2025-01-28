@@ -55,6 +55,12 @@ if (isNode) {
  * @property {Array} fields The fields that this `UserClassObject` has.
  */
 /**
+ * @typedef {Object} UnparsedMorph
+ * @property {number} id
+ * @property {number} version
+ * @property {Array<any>} fields
+ */
+/**
  * @typedef {Object} Stage
  * @property {"Stage" | "Background"} objName The name of the stage.
  * @property {Array<Sound>} sounds The sounds that the stage has.
@@ -65,7 +71,7 @@ if (isNode) {
  * @property {Array<object>} scripts The scripts the stage has.
  * @property {number} volume The current sound volume of the stage.
  * @property {number} tempoBPM
- * @property {Array<Sprite | { id: number, version: number, field: Array<any> }>} children Contains every `Sprite` in the project.
+ * @property {Array<Sprite | UnparsedMorph>} children Contains every `Sprite` in the project.
  */
 /**
  * @typedef {Object} Sprite

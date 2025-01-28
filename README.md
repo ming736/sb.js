@@ -6,7 +6,9 @@ A library for reading and writing to .sb (Scratch 1.x) project files
 > The [original version](https://github.com/trumank/sb.js) of sb.js was made by trumank.
 
 # Installation
-Run `npm install @ming736/sb.js` in your project folder.
+```
+npm install @ming736/sb.js
+```
 # Examples
 ## Loading a project
 ### Current
