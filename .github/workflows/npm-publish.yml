@@ -31,10 +31,12 @@ jobs:
       - run: npm ci
       - name: Publish to stable
         if: "!github.event.release.prerelease"
-      - run: npm publish --access public
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       
       - name: Publish to nightly
         if: "github.event.release.prerelease"
-      - run: npm publish --access public --tag nightly
+        run: npm publish --access public --tag nightly
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
