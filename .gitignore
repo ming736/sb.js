@@ -136,3 +136,6 @@ dist
 .pnp.*
 
 dist/
+test.js
+src/*.d.ts
+src/*.d.ts.map

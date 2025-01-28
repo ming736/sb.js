@@ -23,26 +23,101 @@ if (isNode) {
     this.stage = null;
     this.info = null;
 };*/
+/**
+ * @typedef {Object} ProjectInfo
+ * @property {string?} derived-from Possibly the original filename.
+ * @property {string?} history The history data.
+ * @property {string?} comment The project author's comment about the project. More commonly known as the `Project Notes` or `Notes and Credits`.
+ * @property {import("canvas").Canvas?} thumbnail The project's thumbnail.
+ * @property {string?} author The project's author.
+ * @property {string?} organization The organization that created this project.
+ * @property {string?} os-version The OS version.
+ * @property {string?} language The language code used when this project was last saved.
+ * @property {string?} platform The platform used when this project was last saved.
+ * @property {ScratchVersion?} scratch-version The version of `Scratch` that was used to save this project.
+ */
+/**
+ * @typedef {Object} BaseSprite
+ * @property {string} objName The name of this sprite.
+ * @property {Array<object>} sounds The sounds that this sprite has.
+ * @property {Array<Costume>} costumes The costumes that this sprite has.
+ * @property {number} currentCostumeIndex The current costume index.
+ * @property {Array<Variable>} variables The variables this sprite has.
+ * @property {Array<object>} lists The lists this sprite has.
+ * @property {Array<object>} scripts The scripts this sprite has.
+ * @property {number} volume The current sound volume of this sprite.
+ * @property {number} tempoBPM
+ */
+/**
+ * @typedef {Object} UserClassObject
+ * @property {number} id The id of this `UserClassObject`.
+ * @property {number} version The version of this `UserClassObject`.
+ * @property {Array} fields The fields that this `UserClassObject` has.
+ */
+/**
+ * @typedef {Object} Stage
+ * @property {"Stage" | "Background"} objName The name of the stage.
+ * @property {Array<object>} sounds The sounds that the stage has.
+ * @property {Array<Costume>} costumes The costumes that the stage has.
+ * @property {number} currentCostumeIndex The current backdrop index.
+ * @property {Array<Variable>} variables The variables the stage has.
+ * @property {Array<object>} lists The lists the stage has.
+ * @property {Array<object>} scripts The scripts the stage has.
+ * @property {number} volume The current sound volume of the stage.
+ * @property {number} tempoBPM
+ * @property {Array<Sprite | { id: number, version: number, field: Array<any> }>} children Contains every `Sprite` in the project.
+ */
+/**
+ * @typedef {Object} Sprite
+ * @property {string} objName The name of this sprite.
+ * @property {Array<object>} sounds The sounds that this sprite has.
+ * @property {Array<Costume>} costumes The costumes that this sprite has.
+ * @property {number} currentCostumeIndex The current costume index.
+ * @property {Array<Variable>} variables The variables this sprite has.
+ * @property {Array<object>} scripts The scripts this sprite has.
+ * @property {number?} volume The current sound volume of this sprite.
+ * @property {number?} tempoBPM
+ * @property {number} scratchX The X position of this sprite.
+ * @property {number} scratchY The Y position of this sprite.
+ * @property {number} scale The scale value of this sprite.
+ * @property {number} direction The direction this sprite is pointing in.
+ * @property {"normal" | string} rotationStyle The rotation style of this sprite.
+ * @property {boolean?} isDraggable Whether or not this sprite can be dragged around.
+ * @property {number} indexInLibrary The sprite's index in the library. If it was not taken from the library, this will have a value of `-1`.
+ * @property {boolean} visible Whether or not the sprite is currently visible.
+ * @property {object?} lists This sprite's lists.
+ */
+/**
+ * @typedef {Object} Variable
+ * @property {string} name The name of this variable.
+ * @property {any} value The value of this variable.
+ * @property {boolean} isPersistent
+ */
+/**
+ * @typedef {Object} Costume
+ * @property {string} costumeName The name of this costume.
+ * @property {number} rotationCenterX
+ * @property {number} rotationCenterY
+ * @property {import("canvas").Canvas} image
+ */
 
 class Project {
     /**
-     * @typedef {Object} ProjectInfo
-     * @property {string?} derived-from Possibly the original filename.
-     * @property {string?} history The history data.
-     * @property {string?} comment The project author's comment about the project. More commonly known as the `Project Notes` or `Notes and Credits`.
-     * @property {import("canvas").Canvas?} thumbnail The project's thumbnail.
-     * @property {string?} author The project's author.
-     * @property {string?} organization The organization that created this project.
-     * @property {string?} os-version The OS version.
-     * @property {string?} language The language code used when this project was last saved.
-     * @property {string?} platform The platform used when this project was last saved.
-     * @property {ScratchVersion?} scratch-version The version of `Scratch` that was used to save this project.
-     */
-    /**
-     * @type {ProjectInfo}
+     * @type {ProjectInfo | null}
      */
     info;
+    /**
+     * @type {Stage | null}
+     */
     stage;
+    /**
+     * @type {string?}
+     */
+    path;
+    /**
+     * @type {Buffer?}
+     */
+    buffer;
     constructor(pathOrBuffer) {
         if (typeof pathOrBuffer === 'string') {
             this.path = pathOrBuffer;
@@ -69,10 +144,6 @@ class Project {
         } else {
             this.read(this.buffer, onload);
         }
-    };
-    #openBuffer(buf) {
-        this.buffer = buf
-        this.read(this.buffer);
     };
     /**
      * @warn This method will be deprecated in v1.0.

@@ -1,0 +1,11 @@
+{
+  "include": ["src/sb.js", "src/index.js"],
+  "exclude": [],
+  "compilerOptions": {
+    "allowJs": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "src",
+    "declarationMap": true
+  }
+}
