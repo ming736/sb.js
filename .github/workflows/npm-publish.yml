@@ -29,14 +29,31 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/
       - run: npm ci
+      
+      # Publish with ts-nightly tag for 1.0.x nightly releases
+      - name: Publish to ts-nightly
+        if: contains(github.event.release.name, '1.0.') && contains(github.event.release.name, 'nightly')
+        run: npm publish --access public --tag ts-nightly
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      
+      # Publish with ts-next tag for regular 1.0.x releases
+      - name: Publish to ts-next
+        if: contains(github.event.release.name, '1.0.') && !contains(github.event.release.name, 'nightly')
+        run: npm publish --access public --tag ts-next
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      
+      # Original stable release publish
       - name: Publish to stable
-        if: github.event.release.prerelease == false
+        if: github.event.release.prerelease == false && !contains(github.event.release.name, '1.0.')
         run: npm publish --access public
         env:
-            NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       
+      # Original nightly release publish
       - name: Publish to nightly
-        if: github.event.release.prerelease == true
+        if: github.event.release.prerelease == true && !contains(github.event.release.name, '1.0.')
         run: npm publish --access public --tag nightly
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
