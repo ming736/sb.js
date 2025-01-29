@@ -1,5 +1,4 @@
-name: publish nightly
-
+name: publish ts-nightly
 on:
   schedule:
     - cron: '0 0 * * *'  # Runs at 00:00 UTC every day
@@ -53,9 +52,9 @@ jobs:
           # Get all versions of the package
           versions=$(npm view ${{ steps.package.outputs.name }} versions --json)
           
-          # Loop through versions and deprecate nightlies that don't start with 1.
+          # Loop through versions and deprecate nightlies that start with 1.
           echo "$versions" | jq -r '.[]' | while read version; do
-            if [[ $version != 1.* ]] && [[ $version == *"nightly"* ]]; then
+            if [[ $version == 1.* ]] && [[ $version == *"nightly"* ]]; then
               npm deprecate "${{ steps.package.outputs.name }}@$version" "Deprecated in favor of newer nightly build" || true
             fi
           done
@@ -72,6 +71,6 @@ jobs:
           npm version $nightly_version --no-git-tag-version
       - name: Publish to NPM
         if: steps.check-changes.outputs.changed == 'true'
-        run: npm publish --access public --tag nightly
+        run: npm publish --access public --tag ts-nightly
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
