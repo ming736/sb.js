@@ -1,4 +1,4 @@
-name: publish nightly
+name: publish ts-nightly
 
 on:
   schedule:
@@ -82,6 +82,6 @@ jobs:
 
       - name: Publish to NPM
         if: steps.check-changes.outputs.changed == 'true'
-        run: npm publish --access public --tag nightly
+        run: npm publish --access public --tag ts-nightly
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

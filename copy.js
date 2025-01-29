@@ -1,4 +1,4 @@
-const fs = require("fs")
+import fs from "fs"
 
-fs.copyFileSync("./src/index.js", "./dist/index.js")
-fs.copyFileSync("./src/sb.js", "./dist/sb.js")
+fs.copyFileSync("./src/index.ts", "./dist/index.ts")
+fs.copyFileSync("./src/sb.ts", "./dist/sb.ts")

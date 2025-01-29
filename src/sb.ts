@@ -1,19 +1,21 @@
-let isNode = typeof window === "undefined"
+import { createCanvas, Canvas } from "canvas";
 
-var sb = {}
+interface sb {
+    canvas: typeof createCanvas;
+    [key: string]: any;
+}
+// @ts-expect-error
+export var sb: sb = {}
 
-function extend(base, ex) {
+function extend(base: object, ex: object) {
     for (var key in ex) {
         if (ex.hasOwnProperty(key)) {
             base[key] = ex[key];
         }
     }
 }
-if (isNode) {
-    sb.canvas = require('canvas').createCanvas;
-    exports.sb = sb;
-}
 
+sb.canvas = createCanvas
 /*sb.Project = function (pathOrBuffer) {
     if (typeof pathOrBuffer === 'string') { 
         this.path = pathOrBuffer;
@@ -24,113 +26,244 @@ if (isNode) {
     this.info = null;
 };*/
 /**
- * @typedef {Object} ProjectInfo
- * @property {string?} derived-from Possibly the original filename.
- * @property {string?} history The history data.
- * @property {string?} comment The project author's comment about the project. More commonly known as the `Project Notes` or `Notes and Credits`.
- * @property {import("canvas").Canvas?} thumbnail The project's thumbnail.
- * @property {string?} author The project's author.
- * @property {string?} organization The organization that created this project.
- * @property {string?} os-version The OS version.
- * @property {string?} language The language code used when this project was last saved.
- * @property {string?} platform The platform used when this project was last saved.
- * @property {string?} scratch-version The version of `Scratch` that was used to save this project.
+ * Interface representing project information.
  */
-/**
- * @typedef {Object} BaseSprite
- * @property {string} objName The name of this sprite.
- * @property {Array<Sound>} sounds The sounds that this sprite has.
- * @property {Array<Costume>} costumes The costumes that this sprite has.
- * @property {number} currentCostumeIndex The current costume index.
- * @property {Array<Variable>} variables The variables this sprite has.
- * @property {Array<object>} lists The lists this sprite has.
- * @property {Array<object>} scripts The scripts this sprite has.
- * @property {number} volume The current sound volume of this sprite.
- * @property {number} tempoBPM
- */
-/**
- * @typedef {Object} UserClassObject
- * @property {number} id The id of this `UserClassObject`.
- * @property {number} version The version of this `UserClassObject`.
- * @property {Array} fields The fields that this `UserClassObject` has.
- */
-/**
- * @typedef {Object} UnparsedMorph
- * @property {number} id
- * @property {number} version
- * @property {Array<any>} fields
- */
-/**
- * @typedef {Object} Stage
- * @property {"Stage" | "Background"} objName The name of the stage.
- * @property {Array<Sound>} sounds The sounds that the stage has.
- * @property {Array<Costume>} costumes The costumes that the stage has.
- * @property {number} currentCostumeIndex The current backdrop index.
- * @property {Array<Variable>} variables The variables the stage has.
- * @property {Array<object>} lists The lists the stage has.
- * @property {Array<object>} scripts The scripts the stage has.
- * @property {number} volume The current sound volume of the stage.
- * @property {number} tempoBPM
- * @property {Array<Sprite | UnparsedMorph>} children Contains every `Sprite` in the project.
- */
-/**
- * @typedef {Object} Sprite
- * @property {string} objName The name of this sprite.
- * @property {Array<Sound>} sounds The sounds that this sprite has.
- * @property {Array<Costume>} costumes The costumes that this sprite has.
- * @property {number} currentCostumeIndex The current costume index.
- * @property {Array<Variable>} variables The variables this sprite has.
- * @property {Array<object>} scripts The scripts this sprite has.
- * @property {number?} volume The current sound volume of this sprite.
- * @property {number?} tempoBPM
- * @property {number} scratchX The X position of this sprite.
- * @property {number} scratchY The Y position of this sprite.
- * @property {number} scale The scale value of this sprite.
- * @property {number} direction The direction this sprite is pointing in.
- * @property {"normal" | string} rotationStyle The rotation style of this sprite.
- * @property {boolean?} isDraggable Whether or not this sprite can be dragged around.
- * @property {number} indexInLibrary The sprite's index in the library. If it was not taken from the library, this will have a value of `-1`.
- * @property {boolean} visible Whether or not the sprite is currently visible.
- * @property {object?} lists This sprite's lists.
- */
-/**
- * @typedef {Object} Variable
- * @property {string} name The name of this variable.
- * @property {any} value The value of this variable.
- * @property {boolean} isPersistent
- */
-/**
- * @typedef {Object} Costume
- * @property {string} costumeName The name of this costume.
- * @property {number} rotationCenterX
- * @property {number} rotationCenterY
- * @property {import("canvas").Canvas} image
- */
-/**
- * Not implemented
- * @typedef {Object} Sound
- * @property {string} soundName The name of this sound.
- * @property {null} sound Not implemented.
- */
+interface ProjectInfo {
+    /** Possibly the original filename. */
+    derivedFrom?: string;
 
-class Project {
+    /** The history data. */
+    history?: string;
+
+    /** The project author's comment about the project. More commonly known as the `Project Notes` or `Notes and Credits`. */
+    comment?: string;
+
+    /** The project's thumbnail. */
+    thumbnail?: Canvas;
+
+    /** The project's author. */
+    author?: string;
+
+    /** The organization that created this project. */
+    organization?: string;
+
+    /** The OS version. */
+    osVersion?: string;
+
+    /** The language code used when this project was last saved. */
+    language?: string;
+
+    /** The platform used when this project was last saved. */
+    platform?: string;
+
+    /** The version of `Scratch` that was used to save this project. */
+    scratchVersion?: string;
+}
+
+/**
+ * Interface representing a base sprite.
+ */
+interface BaseSprite {
+    /** The name of this sprite. */
+    objName: string;
+
+    /** The sounds that this sprite has. */
+    sounds: Sound[];
+
+    /** The costumes that this sprite has. */
+    costumes: Costume[];
+
+    /** The current costume index. */
+    currentCostumeIndex: number;
+
+    /** The variables this sprite has. */
+    variables: Variable[];
+
+    /** The lists this sprite has. */
+    lists: object[];
+
+    /** The scripts this sprite has. */
+    scripts: object[];
+
+    /** The current sound volume of this sprite. */
+    volume?: number;
+
+    /** The tempo of this sprite in beats per minute. */
+    tempoBPM?: number;
+}
+
+/**
+ * Interface representing a user class object.
+ */
+interface UserClassObject {
+    /** The id of this `UserClassObject`. */
+    id: number;
+
+    /** The version of this `UserClassObject`. */
+    version: number;
+
+    /** The fields that this `UserClassObject` has. */
+    fields: any[];
+}
+
+/**
+ * Interface representing a stage in the project.
+ */
+interface Stage extends BaseSprite {
+    /** The name of the stage. Can be "Stage" or "Background". */
+    objName: "Stage" | "Background";
+
+    /** The sounds that the stage has. */
+    sounds: Sound[];
+
+    /** The costumes that the stage has. */
+    costumes: Costume[];
+
+    /** The current backdrop index. */
+    currentCostumeIndex: number;
+
+    /** The variables the stage has. */
+    variables: Variable[];
+
+    /** The lists the stage has. */
+    lists: object[];
+
+    /** The scripts the stage has. */
+    scripts: object[];
+
+    /** The current sound volume of the stage. */
+    volume: number;
+
+    /** The tempo BPM of the stage. */
+    tempoBPM: number;
+
+    /** Contains every sprite in the project. */
+    children: (Sprite | UserClassObject)[];
+}
+
+/**
+ * Interface representing a sprite in the project.
+ */
+interface Sprite extends Omit<BaseSprite, "lists"> {
+    /** The name of this sprite. */
+    objName: string;
+
+    /** The sounds that this sprite has. */
+    sounds: Sound[];
+
+    /** The costumes that this sprite has. */
+    costumes: Costume[];
+
+    /** The current costume index. */
+    currentCostumeIndex: number;
+
+    /** The variables this sprite has. */
+    variables: Variable[];
+
+    /** The scripts this sprite has. */
+    scripts: object[];
+
+    /** The current sound volume of this sprite. */
+    volume?: number;
+
+    /** The tempo BPM of this sprite. */
+    tempoBPM?: number;
+
+    /** The X position of this sprite. */
+    scratchX: number;
+
+    /** The Y position of this sprite. */
+    scratchY: number;
+
+    /** The scale value of this sprite. */
+    scale: number;
+
+    /** The direction this sprite is pointing in. */
+    direction: number;
+
+    /** The rotation style of this sprite. */
+    rotationStyle: "normal" | string;
+
+    /** Whether or not this sprite can be dragged around. */
+    isDraggable?: boolean;
+
+    /** The sprite's index in the library. If it was not taken from the library, this will have a value of `-1`. */
+    indexInLibrary: number;
+
+    /** Whether or not the sprite is currently visible. */
+    visible: boolean;
+
+    /** This sprite's lists. */
+    lists?: object;
+}
+
+/**
+ * Interface representing a variable in the project.
+ */
+interface Variable {
+    /** The name of this variable. */
+    name: string;
+
+    /** The value of this variable. */
+    value: any;
+
+    /** Whether or not the variable is persistent. */
+    isPersistent: boolean;
+}
+
+/**
+ * Interface representing a costume in the project.
+ */
+interface Costume {
+    /** The name of this costume. */
+    costumeName: string;
+
+    /** The rotation center X of this costume. */
+    rotationCenterX: number;
+
+    /** The rotation center Y of this costume. */
+    rotationCenterY: number;
+
+    /** The image of this costume. */
+    image: Canvas;
+}
+
+/**
+ * Interface representing a sound in the project (not fully implemented).
+ */
+interface Sound {
+    /** The name of this sound. */
+    soundName: string;
+
+    /** The sound data (not implemented). */
+    sound: null;
+}
+
+class NotImplementedError extends Error {
+    constructor(...a) {
+        super(...a);
+        this.name = "NotImplementedError";
+    }
+}
+
+export class Project<compatibilityMode extends boolean = false> {
     /**
      * @type {ProjectInfo | null}
      */
-    info;
+    info: ProjectInfo | null;
     /**
      * @type {Stage | null}
      */
-    stage;
+    stage: Stage | null;
     /**
      * @type {string?}
      */
-    path;
+    path: string | undefined; // this is so dumb
     /**
      * @type {Buffer?}
      */
-    buffer;
-    constructor(pathOrBuffer) {
+    buffer: Buffer | undefined; // this is so dumb 2
+    constructor(pathOrBuffer: string | Buffer, compat: compatibilityMode) {
         if (typeof pathOrBuffer === 'string') {
             this.path = pathOrBuffer;
         } else {
@@ -138,9 +271,17 @@ class Project {
         }
         this.stage = null;
         this.info = null;
+        if (compat == false) {
+            if (this.path) {
+                throw new NotImplementedError()
+            } else {
+                this.read(this.buffer, onload);
+            }
+        }
     };
     /**
-     * @warn This method will be deprecated in v1.0.
+     * @deprecated Exists for backwards compatibility only.
+     * @since v0.1.0-bacdda0
      * @param {Function} onload 
      */
     open(onload) {
@@ -158,9 +299,9 @@ class Project {
         }
     };
     /**
-     * @warn This method will be deprecated in v1.0.
+     * @since v0.1.0-bacdda0
      */
-    read(data, onload) {
+    private read(data, onload) {
         var stream = new sb.ReadStream(data);
         let head = stream.utf8(8)
         if (head === 'ScratchV') {
@@ -187,9 +328,9 @@ class Project {
         onload(false);
     };
     /**
-     * @warn This method will be deprecated in v1.0.
+     * @since v0.1.0-bacdda0
      */
-    read1(stream, onload) {
+    private read1(stream, onload) {
         stream.uint32();
         var ostream = new sb.ObjectStream(stream);
         this.info = ostream.readObject();
@@ -201,15 +342,17 @@ class Project {
         }
     };
     /**
-     * @warn This method will be deprecated in v1.0.
+     * @deprecated Broken. Also only exists for backwards compatibility only.
+     * @since v0.1.0-bacdda0
      */
-    read2(stream, onload) {
+    private read2(stream, onload) {
         var array = stream.uint8array,
             string = '',
             i;
         for (i = 0; i < array.length; i++) {
             string += String.fromCharCode(array[i]);
         }
+        // @ts-expect-error
         var zip = new JSZip(string, { base64: false });
         var images = zip.file(/[0-9]+\.png/).sort(function (a, b) {
             return parseInt(a.name, 10) - parseInt(b.name, 10);
@@ -297,7 +440,10 @@ class Project {
     }
 }
 
-class ReadStream {
+export class ReadStream {
+    buffer: Buffer;
+    index: number;
+    uint8array: Uint8Array;
     constructor(arraybuffer) {
         this.buffer = arraybuffer;
         this.index = 0;
@@ -316,7 +462,7 @@ class ReadStream {
         }
         return string;
     };
-    arrayBuffer(length, reverse) {
+    arrayBuffer(length, reverse?) {
         if (reverse) {
             var array = new Uint8Array(length);
             var i = length;
@@ -327,35 +473,38 @@ class ReadStream {
         }
         return this.buffer.slice(this.index, this.index += length);
     };
-    uint8() {
+    uint8(n?: any) {
         return this.uint8array[this.index++];
     };
-    int8() {
+    int8(n?: any) {
         var i = this.uint8();
         return i > 0x7f ? i - 0x100 : i;
     };
-    uint16() {
+    uint16(n?: any) {
         return this.uint8() << 8 | this.uint8();
     };
-    int16() {
+    int16(n?: any) {
         var i = this.uint16();
         return i > 0x7fff ? i - 0x10000 : i;
     };
-    uint24() {
+    uint24(n?: any) {
         return this.uint8() << 16 | this.uint8() << 8 | this.uint8();
     };
-    uint32() {
+    uint32(n?: any) {
         return this.uint8() * 0x1000000 + (this.uint8() << 16) + (this.uint8() << 8) + this.uint8();
     };
-    int32() {
+    int32(n?: any) {
         var i = this.uint32();
         return i > 0x7fffffff ? i - 0x100000000 : i;
     };
-    float64() {
+    float64(n?: any) {
         return new Float64Array(this.arrayBuffer(8, true))[0];
     }
 }
-class WriteStream {
+export class WriteStream {
+    allocated: number;
+    index: number;
+    array: Uint8Array;
     constructor() {
         this.allocated = 1024;
         this.index = 0;
@@ -381,7 +530,7 @@ class WriteStream {
             this.uint8(string.charCodeAt(i));
         }
     };
-    arrayBuffer(buffer, reverse) {
+    arrayBuffer(buffer, reverse?) {
         var array = new Uint8Array(buffer);
         if (reverse) {
             var i = array.length;
@@ -399,7 +548,7 @@ class WriteStream {
         this.array[this.index++] = n;
     };
     int8(n) {
-        this.uint8(n > 0x7f ? i - 0xff : n);
+        this.uint8(n > 0x7f ? n - 0xff : n);
     };
     uint16(n) {
         this.uint8(n >> 8 & 0xff);
@@ -428,7 +577,7 @@ class WriteStream {
         this.arrayBuffer(b.buffer, true);
     }
 }
-class ObjectStream {
+export class ObjectStream {
     changingIds = [
         30, 31, // colors
         34, 35  // forms
@@ -458,6 +607,7 @@ class ObjectStream {
                     var id = hint || null;
                     if (id) {
                         id = Array.isArray(id) ? (id[i]) : id;
+                        // @ts-expect-error
                         id = typeof id === 'number' ? id : keyId(value, i);
                     }
                     return self.createObject(table, value, id)
@@ -829,7 +979,10 @@ class ObjectStream {
         }
     }
 
-    constructor(stream) {
+    stream: ReadStream;
+    object: object;
+
+    constructor(stream: ReadStream) {
         this.stream = stream;
     };
 
@@ -837,13 +990,12 @@ class ObjectStream {
         var start = this.stream.index;
         this.stream.utf8('ObjS\x01Stch\x01');
 
-        var table = [];
+        var table: Array<any> & { raw?: Array<any> } = [];
         table.raw = [];
 
         this.object = object;
 
         this.createObject(table, object, id, hint);
-
         this.stream.uint32(table.length);
 
         var self = this;
@@ -864,7 +1016,7 @@ class ObjectStream {
             return { $: i + 1 };
         }
         table.raw.push(object);
-        var record = {
+        var record: any = {
             id: id
         };
         table.push(record);
@@ -897,7 +1049,7 @@ class ObjectStream {
             this.writeUserFormat(object);
         }
     };
-    writeUserFormat(object) {
+    writeUserFormat(object: any) {
         this.stream.uint8(object.version);
         this.stream.uint8(object.value.length);
 
@@ -906,7 +1058,7 @@ class ObjectStream {
             self.writeInline(field);
         });
     };
-    writeFixedFormat(object) {
+    writeFixedFormat(object: any) {
         var self = this;
         switch (object.id) {
             case 9:
@@ -971,7 +1123,7 @@ class ObjectStream {
                 this.writeInline(object.value.offset);
                 this.writeInline(object.value.bitmap);
                 if (colorForm) {
-                    this.writeInlint(object.value.colors);
+                    this.writeInline(object.value.colors);
                 }
                 break;
             default:
@@ -1025,7 +1177,7 @@ class ObjectStream {
     readObject() {
         let objHeader = this.stream.utf8(10)
         if (objHeader !== 'ObjS\x01Stch\x01') {
-            throw new Error(`${objHeader.toString("utf-8")} is not an object`);
+            throw new Error(`${objHeader.toString()} is not an object`);
         }
         var size = this.stream.uint32();
 
@@ -1081,6 +1233,7 @@ class ObjectStream {
                 return new Uint8Array(this.stream.arrayBuffer(this.stream.uint32() * 2));
             case 13: // Bitmap
                 var a = new Uint8Array(this.stream.arrayBuffer(this.stream.uint32() * 4));
+                //@ts-expect-error
                 a.bitmap = true;
                 return a;
             case 20: // Array
@@ -1277,7 +1430,7 @@ class ObjectStream {
                     }
                 }
             }
-
+            //@ts-expect-error
             var colors = image.colors || this.squeakColors;
             var array = data.data;
 
@@ -1402,6 +1555,42 @@ class ObjectStream {
         }
         return out;
     };
+    jsonify(object, parent?) {
+        var self = this,
+            json;
+        if (object && object.id && this.formats[object.id]) {
+            var format = this.formats[object.id].read;
+            json = {};
+            for (var field in format) {
+                var value = format[field];
+                var type = typeof value;
+                var tmp;
+                if (type === 'number') {
+                    tmp = object.fields[value];
+                } else if (type === 'function') {
+                    tmp = value(object.fields, parent);
+                } else {
+                    tmp = value;
+                }
+
+                json[field] = this.jsonify(tmp, object);
+            }
+            return json;
+        } else if (object instanceof sb.Dict) {
+            json = {};
+            for (var key in object) {
+                json[key] = this.jsonify(object[key], parent);
+            }
+            return json;
+        } else if (object instanceof Array) {
+            return object.map(function (d) {
+                return self.jsonify(d, parent);
+            });
+        }
+        return object;
+    };
+};
+/*
     fixObjectRefs(table, object) {
         var id = object.id;
         if (id < 99) {
@@ -1619,41 +1808,7 @@ class ObjectStream {
         }
         return out;
     };
-    jsonify(object, parent) {
-        var self = this,
-            json;
-        if (object && object.id && this.formats[object.id]) {
-            var format = this.formats[object.id].read;
-            json = {};
-            for (var field in format) {
-                var value = format[field];
-                var type = typeof value;
-                var tmp;
-                if (type === 'number') {
-                    tmp = object.fields[value];
-                } else if (type === 'function') {
-                    tmp = value(object.fields, parent);
-                } else {
-                    tmp = value;
-                }
-
-                json[field] = this.jsonify(tmp, object);
-            }
-            return json;
-        } else if (object instanceof sb.Dict) {
-            json = {};
-            for (var key in object) {
-                json[key] = this.jsonify(object[key], parent);
-            }
-            return json;
-        } else if (object instanceof Array) {
-            return object.map(function (d) {
-                return self.jsonify(d, parent);
-            });
-        }
-        return object;
-    };
-};
+*/
 sb.Project = Project
 sb.ReadStream = ReadStream
 sb.WriteStream = WriteStream
@@ -2787,7 +2942,7 @@ sb.blocks = {
 
 sb.createCanvas = function (width, height) {
     if (sb.canvas) {
-        return new sb.canvas(width, height);
+        return sb.canvas(width, height);
     }
     var canvas = document.createElement('canvas');
     canvas.width = width;
@@ -2845,3 +3000,4 @@ sb.createCanvas = function (width, height) {
 
 
 sb.Dict = function () { };
+export default sb

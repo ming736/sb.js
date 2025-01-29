@@ -5,7 +5,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx tsc && node copy",
+    "build": "npx tsc",
     "prepare": "npm run build"
   },
   "repository": {
@@ -23,6 +23,7 @@
   "homepage": "https://github.com/ming736/sb.js#readme",
   "dependencies": {
     "canvas": "^3.1.0",
+    "imagescript": "^1.3.0",
     "jszip": "^3.10.1",
     "typescript": "^5.7.3"
   },

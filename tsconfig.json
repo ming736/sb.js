@@ -1,11 +1,12 @@
 {
-  "include": ["src/sb.js", "src/index.js"],
+  "include": ["src/sb.ts", "src/index.ts"],
   "exclude": [],
   "compilerOptions": {
     "allowJs": true,
     "declaration": true,
-    "emitDeclarationOnly": true,
+    "emitDeclarationOnly": false,
     "outDir": "dist",
-    "declarationMap": true
+    "declarationMap": true,
+    "esModuleInterop": true
   }
 }
