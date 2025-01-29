@@ -749,7 +749,9 @@ class ObjectStream {
         },
         155: {
             read: {
-                objName: 19,
+                objName: function (fields) {
+                    return fields[19] ?? fields[13].fields[8]
+                },
                 displayName: function (fields) {
                     return fields[13].fields[8]
                 }
