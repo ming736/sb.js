@@ -19,7 +19,7 @@ jobs:
       # - run: npm test
       - run: npm run build
 
-  publish-npm:
+  publish-npm-next:
     needs: build
     runs-on: ubuntu-latest
     steps:
