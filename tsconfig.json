@@ -1,6 +1,6 @@
 {
-  "include": ["src/sb.ts", "src/index.ts"],
-  "exclude": [],
+  "include": ["src/**/*"],
+  "exclude": ["src/jszip"],
   "compilerOptions": {
     "allowJs": true,
     "declaration": true,

@@ -139,5 +139,6 @@ dist/
 test.js
 test.cjs
 test.mjs
+test.ts
 src/*.d.ts
 src/*.d.ts.map

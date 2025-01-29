@@ -1,5 +1,8 @@
 node_modules/
 test.js
+test.cjs
+test.mjs
+test.ts
 out/
 src/
 examples/

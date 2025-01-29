@@ -1,9 +1,7 @@
 import { createCanvas, Canvas } from "canvas";
-
-interface sb {
-    canvas: typeof createCanvas;
-    [key: string]: any;
-}
+import Stage from "./classes/Stage";
+import { Collection } from "@discordjs/collection"
+import type { Variable, Costume, Sound } from "./classes/Legacy";
 // @ts-expect-error
 export var sb: sb = {}
 
@@ -28,7 +26,7 @@ sb.canvas = createCanvas
 /**
  * Interface representing project information.
  */
-interface ProjectInfo {
+interface CompatibilityProjectInfo {
     /** Possibly the original filename. */
     derivedFrom?: string;
 
@@ -63,7 +61,7 @@ interface ProjectInfo {
 /**
  * Interface representing a base sprite.
  */
-interface BaseSprite {
+interface CompatibilityBaseSprite {
     /** The name of this sprite. */
     objName: string;
 
@@ -109,7 +107,7 @@ interface UserClassObject {
 /**
  * Interface representing a stage in the project.
  */
-interface Stage extends BaseSprite {
+interface CompatibilityStage extends CompatibilityBaseSprite {
     /** The name of the stage. Can be "Stage" or "Background". */
     objName: "Stage" | "Background";
 
@@ -138,13 +136,13 @@ interface Stage extends BaseSprite {
     tempoBPM: number;
 
     /** Contains every sprite in the project. */
-    children: (Sprite | UserClassObject)[];
+    children: (CompatibilitySprite | UserClassObject)[];
 }
 
 /**
  * Interface representing a sprite in the project.
  */
-interface Sprite extends Omit<BaseSprite, "lists"> {
+interface CompatibilitySprite extends Omit<CompatibilityBaseSprite, "lists"> {
     /** The name of this sprite. */
     objName: string;
 
@@ -197,48 +195,6 @@ interface Sprite extends Omit<BaseSprite, "lists"> {
     lists?: object;
 }
 
-/**
- * Interface representing a variable in the project.
- */
-interface Variable {
-    /** The name of this variable. */
-    name: string;
-
-    /** The value of this variable. */
-    value: any;
-
-    /** Whether or not the variable is persistent. */
-    isPersistent: boolean;
-}
-
-/**
- * Interface representing a costume in the project.
- */
-interface Costume {
-    /** The name of this costume. */
-    costumeName: string;
-
-    /** The rotation center X of this costume. */
-    rotationCenterX: number;
-
-    /** The rotation center Y of this costume. */
-    rotationCenterY: number;
-
-    /** The image of this costume. */
-    image: Canvas;
-}
-
-/**
- * Interface representing a sound in the project (not fully implemented).
- */
-interface Sound {
-    /** The name of this sound. */
-    soundName: string;
-
-    /** The sound data (not implemented). */
-    sound: null;
-}
-
 class NotImplementedError extends Error {
     constructor(...a) {
         super(...a);
@@ -246,24 +202,28 @@ class NotImplementedError extends Error {
     }
 }
 
-export class Project<compatibilityMode extends boolean = false> {
-    /**
-     * @type {ProjectInfo | null}
-     */
-    info: ProjectInfo | null;
-    /**
-     * @type {Stage | null}
-     */
-    stage: Stage | null;
-    /**
-     * @type {string?}
-     */
+function getStackTrace(): string | undefined {
+    const error = new Error();
+    return error.stack;
+}
+
+type ProjectInfoKey = "author" | "thumbnail" | "scratch-version" | "os-version" | "language" | "platform" | "history" | "organization" | "derived-from" | "comment" | ""
+
+export class Project<compatibilityMode extends boolean = true> {
+    info: (compatibilityMode extends true ? CompatibilityProjectInfo | null : Collection<ProjectInfoKey, any>);
+    stage: (compatibilityMode extends true ? CompatibilityStage | null : Stage);
     path: string | undefined; // this is so dumb
-    /**
-     * @type {Buffer?}
-     */
     buffer: Buffer | undefined; // this is so dumb 2
-    constructor(pathOrBuffer: string | Buffer, compat: compatibilityMode) {
+    private _compatibility: compatibilityMode;
+    /**
+     * Whether or not this Project is using the legacy `0.x` API.
+     */
+    get compatibility() {
+        return this._compatibility
+    }
+    constructor(pathOrBuffer: string | Buffer, compat?: compatibilityMode) {
+        this._compatibility = (compat ?? true) as compatibilityMode;
+        //console.log(compat)
         if (typeof pathOrBuffer === 'string') {
             this.path = pathOrBuffer;
         } else {
@@ -271,21 +231,25 @@ export class Project<compatibilityMode extends boolean = false> {
         }
         this.stage = null;
         this.info = null;
-        if (compat == false) {
+        if (this._compatibility === false) {
             if (this.path) {
                 throw new NotImplementedError()
             } else {
-                this.read(this.buffer, onload);
+                this.read(this.buffer);
             }
         }
     };
     /**
-     * @deprecated Exists for backwards compatibility only.
+     * @deprecated Exists for backwards compatibility only. If ran on a project with compatibility mode set to false, this will forcefully set it to true. **IntellISense will still show autocomplete as if compatibility mode was off!**
      * @since v0.1.0-bacdda0
      * @param {Function} onload 
+     * @
      */
-    open(onload) {
-        var self = this;
+    open(onload?) {
+        this._compatibility = true as compatibilityMode;
+        (this as unknown as Project<true>).stage = null as CompatibilityStage;
+        (this as unknown as Project<true>).info = null as CompatibilityProjectInfo;
+        var self = this as unknown as Project<true>;;
         if (this.path) {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', this.path, true);
@@ -301,7 +265,7 @@ export class Project<compatibilityMode extends boolean = false> {
     /**
      * @since v0.1.0-bacdda0
      */
-    private read(data, onload) {
+    private read(data, onload?) {
         var stream = new sb.ReadStream(data);
         let head = stream.utf8(8)
         if (head === 'ScratchV') {
@@ -330,11 +294,13 @@ export class Project<compatibilityMode extends boolean = false> {
     /**
      * @since v0.1.0-bacdda0
      */
-    private read1(stream, onload) {
+    private read1(stream: ReadStream, onload?) {
         stream.uint32();
         var ostream = new sb.ObjectStream(stream);
-        this.info = ostream.readObject();
-        this.stage = ostream.readObject();
+        var infoObject = ostream.readObject()
+        var stageObject = ostream.readObject()
+        this.info = this._compatibility == true ? infoObject : new Collection(Object.entries(infoObject));
+        this.stage = this._compatibility == true ? stageObject : new Stage(stageObject);
         if (onload) {
             onload(true);
         } else {
@@ -345,7 +311,7 @@ export class Project<compatibilityMode extends boolean = false> {
      * @deprecated Broken. Also only exists for backwards compatibility only.
      * @since v0.1.0-bacdda0
      */
-    private read2(stream, onload) {
+    private read2(stream, onload?) {
         var array = stream.uint8array,
             string = '',
             i;
