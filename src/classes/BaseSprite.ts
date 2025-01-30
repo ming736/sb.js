@@ -1,5 +1,6 @@
 import BaseMorph from "./BaseMorph";
-import type { Variable, Costume, Sound } from "./Legacy.js";
+import type { Variable, Costume } from "./Legacy.js";
+import Sound from "./Sound"
 export default class BaseSprite<morphId extends number> extends BaseMorph<morphId> {
     /**
      * The id of this sprite.
@@ -9,7 +10,8 @@ export default class BaseSprite<morphId extends number> extends BaseMorph<morphI
      * The name of this sprite.
      */
     name: string;
-    variables: Array<Variable>
+    variables: Array<Variable>;
+    sounds: Array<Sound>;
     constructor(id: morphId, obj?: Record<any, any>) {
         super(id, obj ?? {});
         if (obj) {

@@ -29,25 +29,25 @@ export default class Image extends BaseMorph<162> {
     /**
      * Converts this image into a buffer.
      */
-    toBuffer() {
+    toBuffer(): Buffer {
         return this.canvas.toBuffer()
     }
     /**
      * Converts this image into a {@link Canvas} object.
      */
-    toCanvas() {
+    toCanvas(): Canvas {
         return this.canvas
     }
     /**
      * Converts this image into a data URL.
      */
-    toDataURL() {
+    toDataURL(): string {
         return this.canvas.toDataURL()
     }
     /**
      * @alias toDataURL
      */
-    toDataURI() {
+    toDataURI(): string {
         return this.canvas.toDataURL()
     }
 }

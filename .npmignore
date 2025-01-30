@@ -3,6 +3,7 @@ test.js
 test.cjs
 test.mjs
 test.ts
+output.wav
 out/
 src/
 examples/

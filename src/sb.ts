@@ -1,9 +1,8 @@
-import { createCanvas, Canvas } from "canvas";
+import { createCanvas as canvas_createCanvas, Canvas } from "canvas";
 import Stage from "./classes/Stage";
 import { Collection } from "@discordjs/collection"
 import type { Variable, Costume, Sound } from "./classes/Legacy";
-// @ts-expect-error
-export var sb: sb = {}
+
 
 function extend(base: object, ex: object) {
     for (var key in ex) {
@@ -12,8 +11,7 @@ function extend(base: object, ex: object) {
         }
     }
 }
-
-sb.canvas = createCanvas
+var canvas = canvas_createCanvas
 /*sb.Project = function (pathOrBuffer) {
     if (typeof pathOrBuffer === 'string') { 
         this.path = pathOrBuffer;
@@ -247,9 +245,7 @@ export class Project<compatibilityMode extends boolean = true> {
      */
     open(onload?) {
         this._compatibility = true as compatibilityMode;
-        (this as unknown as Project<true>).stage = null as CompatibilityStage;
-        (this as unknown as Project<true>).info = null as CompatibilityProjectInfo;
-        var self = this as unknown as Project<true>;;
+        var self = this as unknown as Project<true>;
         if (this.path) {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', this.path, true);
@@ -266,10 +262,10 @@ export class Project<compatibilityMode extends boolean = true> {
      * @since v0.1.0-bacdda0
      */
     private read(data, onload?) {
-        var stream = new sb.ReadStream(data);
+        var stream = new ReadStream(data);
         let head = stream.utf8(8)
         if (head === 'ScratchV') {
-            if (Number(stream.utf8(2) > 0)) {
+            if (Number(stream.utf8(2)) > 0) {
                 this.read1(stream, onload);
                 return;
             }
@@ -296,7 +292,7 @@ export class Project<compatibilityMode extends boolean = true> {
      */
     private read1(stream: ReadStream, onload?) {
         stream.uint32();
-        var ostream = new sb.ObjectStream(stream);
+        var ostream = new ObjectStream(stream);
         var infoObject = ostream.readObject()
         var stageObject = ostream.readObject()
         this.info = this._compatibility == true ? infoObject : new Collection(Object.entries(infoObject));
@@ -323,11 +319,12 @@ export class Project<compatibilityMode extends boolean = true> {
         var images = zip.file(/[0-9]+\.png/).sort(function (a, b) {
             return parseInt(a.name, 10) - parseInt(b.name, 10);
         }).map(function (file) {
-            var canvas = sb.createCanvas(1, 1);
+            var canvas = sb.canvas(1, 1);
             var image = new Image();
             image.onload = function () {
                 canvas.width = image.width;
                 canvas.height = image.height;
+                // @ts-expect-error
                 canvas.getContext('2d').drawImage(image, 0, 0);
             };
             image.src = 'data:image/png;base64,' + btoa(file.data);
@@ -381,8 +378,8 @@ export class Project<compatibilityMode extends boolean = true> {
         }
     };
     save1() {
-        var stream = new sb.WriteStream();
-        var objectStream = new sb.ObjectStream(stream);
+        var stream = new WriteStream();
+        var objectStream = new ObjectStream(stream);
 
         stream.utf8('ScratchV02');
 
@@ -440,18 +437,18 @@ export class ReadStream {
         return this.buffer.slice(this.index, this.index += length);
     };
     uint8(n?: any) {
-        return this.uint8array[this.index++];
+        return this.uint8array[this.index++] as number;
     };
     int8(n?: any) {
         var i = this.uint8();
-        return i > 0x7f ? i - 0x100 : i;
+        return i > 0x7f ? i - 0x100 as number : i as number;
     };
     uint16(n?: any) {
-        return this.uint8() << 8 | this.uint8();
+        return (this.uint8() << 8 | this.uint8()) as number;
     };
     int16(n?: any) {
         var i = this.uint16();
-        return i > 0x7fff ? i - 0x10000 : i;
+        return i > 0x7fff ? i - 0x10000 as number : i as number;
     };
     uint24(n?: any) {
         return this.uint8() << 16 | this.uint8() << 8 | this.uint8();
@@ -509,35 +506,38 @@ export class WriteStream {
         this.array.set(array, this.index);
         this.index += array.length;
     };
-    uint8(n) {
+    uint8(n?: any) {
         this.allocate(1);
         this.array[this.index++] = n;
+        return this.array[this.index-1];
     };
-    int8(n) {
+    int8(n?: any) {
         this.uint8(n > 0x7f ? n - 0xff : n);
     };
-    uint16(n) {
+    uint16(n?: any) {
         this.uint8(n >> 8 & 0xff);
         this.uint8(n & 0xff);
+        return n;
     };
-    int16(n) {
+    int16(n?: any) {
         this.uint16(n > 0x7fff ? n - 0xffff : n);
     };
-    uint24(n) {
+    uint24(n?: any) {
         this.uint8(n >> 16 & 0xff);
         this.uint8(n >> 8 & 0xff);
         this.uint8(n & 0xff);
     };
-    uint32(n) {
+    uint32(n?: any) {
         this.uint8(n >> 24 & 0xff);
         this.uint8(n >> 16 & 0xff);
         this.uint8(n >> 8 & 0xff);
         this.uint8(n & 0xff);
+        return n;
     };
-    int32(n) {
+    int32(n?: any) {
         this.uint32(n > 0x7fffffff ? n - 0xffffffff : n);
     };
-    float64(n) {
+    float64(n?: any) {
         var b = new Float64Array(1);
         b[0] = n;
         this.arrayBuffer(b.buffer, true);
@@ -614,7 +614,7 @@ export class ObjectStream {
                 scripts: function (fields) {
                     var scripts = fields[8];
                     return scripts.map(function (script) {
-                        return [script[0].x, script[0].y, sb.buildScript(script[1])];
+                        return [script[0].x, script[0].y, buildScript(script[1])];
                     });
                 },
                 sounds: function (fields) {
@@ -715,7 +715,7 @@ export class ObjectStream {
                         return [14, typeof value === 'number' ? null : 14];
                     });
                 },
-                sb.blocksBinWrite, // blocksBin
+                blocksBinWrite, // blocksBin
                 false, // isClone
                 function (object, table) { // media
                     return this.createObject(table, object.costumes, 20, 162);
@@ -906,10 +906,15 @@ export class ObjectStream {
                 // TODO: Implement textBox/compositeForm?
             ]
         },
-        164: { // TODO: implement sound
+        164: {
             read: {
                 soundName: 0,
-                sound: null
+                sampledSound: 1,
+                volume: 2,
+                balance: 3,
+                compressed: function(fields) {
+                    return fields[4] !== null
+                }
             },
             write: [
 
@@ -945,14 +950,14 @@ export class ObjectStream {
         }
     }
 
-    stream: ReadStream;
+    stream: ReadStream | WriteStream;
     object: object;
 
-    constructor(stream: ReadStream) {
+    constructor(stream: ReadStream | WriteStream) {
         this.stream = stream;
     };
 
-    writeObject(object, id, hint) {
+    writeObject(object, id, hint?) {
         var start = this.stream.index;
         this.stream.utf8('ObjS\x01Stch\x01');
 
@@ -1143,9 +1148,9 @@ export class ObjectStream {
     readObject() {
         let objHeader = this.stream.utf8(10)
         if (objHeader !== 'ObjS\x01Stch\x01') {
-            throw new Error(`${objHeader.toString()} is not an object`);
+            throw new Error(`${objHeader} is not an object`);
         }
-        var size = this.stream.uint32();
+        var size = this.stream.uint32() as number;
 
         var table = [];
 
@@ -1187,7 +1192,7 @@ export class ObjectStream {
         var array,
             i,
             color,
-            canvas;
+            canvas: Canvas | HTMLCanvasElement;
         switch (id) {
             case 9: // String
             case 10: // Symbol
@@ -1212,7 +1217,7 @@ export class ObjectStream {
                 return array;
             case 24: // Dictionary
             case 25: // IdentityDictionary
-                array = new sb.Dict();
+                array = new Dict();
                 i = this.stream.uint32();
                 while (i--) {
                     array[i] = [this.readInline(), this.readInline()];
@@ -1247,7 +1252,7 @@ export class ObjectStream {
                     cy: this.readInline()
                 };
             case 34: // Form
-                var canvas = sb.createCanvas(1, 1);
+                var canvas = createCanvas(1, 1);
                 extend(canvas, {
                     width: this.readInline(),
                     height: this.readInline(),
@@ -1257,7 +1262,7 @@ export class ObjectStream {
                 });
                 return canvas;
             case 35: // ColorForm
-                var canvas = sb.createCanvas(1, 1);
+                var canvas = createCanvas(1, 1);
                 extend(canvas, {
                     width: this.readInline(),
                     height: this.readInline(),
@@ -1424,7 +1429,7 @@ export class ObjectStream {
         return canvas;
     };
     decompressBitmapFlip(src, out) {
-        var stream = new sb.ReadStream(src.buffer);
+        var stream = new ReadStream(src.buffer);
         var nInt = function () {
             var i = stream.uint8();
             return i <= 223 ? i : (i <= 254 ? (i - 224) * 256 + stream.uint8() : stream.uint32());
@@ -1474,7 +1479,7 @@ export class ObjectStream {
         }
     };
     decompressBitmap(src) {
-        var stream = new sb.ReadStream(src.buffer);
+        var stream = new ReadStream(src.buffer);
         var nInt = function () {
             var i = stream.uint8();
             return i <= 223 ? i : (i <= 254 ? (i - 224) * 256 + stream.uint8() : stream.uint32());
@@ -1542,7 +1547,7 @@ export class ObjectStream {
                 json[field] = this.jsonify(tmp, object);
             }
             return json;
-        } else if (object instanceof sb.Dict) {
+        } else if (object instanceof Dict) {
             json = {};
             for (var key in object) {
                 json[key] = this.jsonify(object[key], parent);
@@ -1775,12 +1780,8 @@ export class ObjectStream {
         return out;
     };
 */
-sb.Project = Project
-sb.ReadStream = ReadStream
-sb.WriteStream = WriteStream
-sb.ObjectStream = ObjectStream
 
-sb.blocksBinWrite = function (object, table) {
+function blocksBinWrite(object: Record<any, any>, table: any[] | object) {
     function crawl(block) {
         if (typeof block !== 'object') {
             return block;
@@ -1789,8 +1790,8 @@ sb.blocksBinWrite = function (object, table) {
             return block.map(function (b) {
                 return crawl(b);
             })
-        } else if (sb.blocks.write[block[0]]) {
-            return block = sb.blocks.write[block[0]].map(function (part) {
+        } else if (blocks.write[block[0]]) {
+            return block = blocks.write[block[0]].map(function (part) {
                 return typeof part === 'number' ? block[part] : (typeof part === 'function' ? part(block) : part);
             })
         }
@@ -2845,27 +2846,26 @@ sb.blocksBinWrite = function (object, table) {
     }
 });*/
 
-sb.buildScript = function (script) {
+function buildScript(script) {
     for (var i = 0; i < script.length; i++) {
         var block = script[i];
         if (Array.isArray(block)) {
-            var refactorer = sb.blocks.read[block[0]];
+            var refactorer = blocks.read[block[0]];
             if (typeof refactorer === 'string') {
                 block[0] = refactorer;
             } else if (typeof refactorer === 'function') {
                 script[i] = refactorer(script[i]);
             }
-            sb.buildScript(script[i]);
+            buildScript(script[i]);
         }
     }
     return script;
 };
-
-sb.objectName = function (obj) {
+function objectName (obj) {
     return obj ? (obj.fields && obj.fields[6] || obj) : '';
 };
 
-sb.blocks = {
+const blocks = {
     read: {
         'EventHatMorph': function (block) {
             if (block[1] === 'Scratch-StartClicked') {
@@ -2881,19 +2881,19 @@ sb.blocks = {
             return [block[2], block[1], block[3]];
         },
         'getAttribute:of:': function (block) {
-            return ['getAttribute:of:', block[1], sb.objectName(block[2])];
+            return ['getAttribute:of:', block[1], objectName(block[2])];
         },
         'touching:': function (block) {
-            return ['touching:', sb.objectName(block[1])];
+            return ['touching:', objectName(block[1])];
         },
         'distanceTo:': function (block) {
-            return ['distanceTo:', sb.objectName(block[1])];
+            return ['distanceTo:', objectName(block[1])];
         },
         'pointTowards:': function (block) {
-            return ['pointTowards:', sb.objectName(block[1])];
+            return ['pointTowards:', objectName(block[1])];
         },
         'gotoSpriteOrMouse:': function (block) {
-            return ['gotoSpriteOrMouse:', sb.objectName(block[1])];
+            return ['gotoSpriteOrMouse:', objectName(block[1])];
         }
     },
     write: {
@@ -2906,7 +2906,7 @@ sb.blocks = {
     }
 };
 
-sb.createCanvas = function (width, height) {
+function createCanvas (width, height) {
     if (sb.canvas) {
         return sb.canvas(width, height);
     }
@@ -2961,9 +2961,20 @@ sb.createCanvas = function (width, height) {
             a: 0xff
         });
     }
-    sb.ObjectStream.prototype.squeakColors = colors;
+    // @ts-expect-error
+    ObjectStream.prototype.squeakColors = colors;
 })();
 
 
-sb.Dict = function () { };
-export default sb
+const Dict = function () { };
+export const sb = {
+    Project,
+    ReadStream,
+    WriteStream,
+    ObjectStream,
+    blocksBinWrite,
+    Dict,
+    canvas,
+    buildScript,
+    blocks
+}

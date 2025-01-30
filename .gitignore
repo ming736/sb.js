@@ -142,3 +142,7 @@ test.mjs
 test.ts
 src/*.d.ts
 src/*.d.ts.map
+byte-stream.ts
+byte-primitives.ts
+
+output.wav
