@@ -2,6 +2,9 @@
 
 A library for reading and writing to .sb (Scratch 1.x) project files
 
+> [!WARNING]
+> This is the newer (next) branch, which is written in TypeScript. Expect bugs and outdated content.
+
 > [!NOTE]
 > The [original version](https://github.com/trumank/sb.js) of sb.js was made by trumank.
 
@@ -9,6 +12,12 @@ A library for reading and writing to .sb (Scratch 1.x) project files
 ```
 npm install @ming736/sb.js
 ```
+# Roadmap
+- [x] Convert the entire thing into TypeScript
+- [x] Compatibility mode
+- [x] Sound support (yippee!)
+
+Will update this list later.
 # Examples
 ## Loading a project
 ### Current
