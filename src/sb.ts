@@ -914,6 +914,12 @@ export class ObjectStream {
                 balance: 3,
                 compressed: function(fields) {
                     return fields[4] !== null
+                },
+                compressedData: function(fields) {
+                    return fields[6]
+                },
+                _fields: function(fields) {
+                    return fields
                 }
             },
             write: [

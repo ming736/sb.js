@@ -15,7 +15,7 @@ npm install @ming736/sb.js
 # Roadmap
 - [x] Convert the entire thing into TypeScript
 - [x] Compatibility mode
-- [x] Sound support (yippee!)
+- [x] Sound support (uncompressed only)
 
 Will update this list later.
 # Examples

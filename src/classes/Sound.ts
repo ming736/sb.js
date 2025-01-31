@@ -20,6 +20,12 @@ function createWavHeader(pcmDataLength: number, sampleRate: number, numChannels:
 
     return header;
 }
+class NotImplementedError extends Error {
+    constructor(...a) {
+        super(...a);
+        this.name = "NotImplementedError";
+    }
+}
 export default class Sound extends BaseMorph<164> {
     /**
      * The id of this sound.
@@ -45,7 +51,7 @@ export default class Sound extends BaseMorph<164> {
         this.sampledSound = soundObject.sampledSound
         this.isCompressed = soundObject.compressed
         this.sampleRate = this.sampledSound.fields[4]
-        this.adpcm = this.sampledSound.fields[3];
+        this.adpcm = this.isCompressed ? soundObject.compressedData : this.sampledSound.fields[3];
         if (!this.isCompressed) {
             this.pcm = new Int16Array(this.adpcm.buffer);
         }
@@ -54,6 +60,9 @@ export default class Sound extends BaseMorph<164> {
      * Returns an `Int16Array` containing PCM data.
      */
     toPCM(): Int16Array {
+        if (this.isCompressed) {
+            throw new NotImplementedError("Compressed audios do not yet work.")
+        }
         if (!this.pcm) {
             if (this.isCompressed) {
                 this.pcm = imaadpcm.decode(this.adpcm)
@@ -67,15 +76,19 @@ export default class Sound extends BaseMorph<164> {
      * Returns a `Buffer` containing WAV data.
      */
     toWAV(): Buffer {
+        if (this.isCompressed) {
+            throw new NotImplementedError("Compressed audios do not yet work.")
+        }
+        let pcm = this.toPCM()
         return Buffer.concat(
             [
                 createWavHeader(
-                    this.pcm.length,
-                    this.sampleRate / 2,
+                    pcm.length,
+                    this.isCompressed ? this.sampleRate : this.sampleRate / 2,
                     1,
                     16
                 ),
-                Buffer.from(this.pcm)
+                Buffer.from(pcm)
             ]
         ) 
     }
