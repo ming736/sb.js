@@ -1,5 +1,6 @@
 import { Project, sb } from "./sb"
 import fs from "fs"
+import API from "./classes/api/API"
 
 /** 
  * The current version of sb.js.
@@ -29,7 +30,8 @@ export {
      * @deprecated This is only for backwards compatibility.
      */
     sb,
-    Project
+    Project,
+    API
 }
 
 export default {
@@ -53,5 +55,6 @@ export default {
      * @deprecated This is only for backwards compatibility.
      */
     sb,
-    Project
+    Project,
+    API
 }

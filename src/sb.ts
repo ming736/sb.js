@@ -1,7 +1,7 @@
 import { createCanvas as canvas_createCanvas, Canvas } from "canvas";
-import Stage from "./classes/Stage";
+import Stage from "./classes/projects/Stage";
 import { Collection } from "@discordjs/collection"
-import type { Variable, Costume, Sound } from "./classes/Legacy";
+import type { Variable, Costume, Sound } from "./classes/projects/Legacy";
 
 
 function extend(base: object, ex: object) {
