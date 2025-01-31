@@ -30,30 +30,26 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm ci
       
-      # Publish with ts-nightly tag for 1.0.x nightly releases
       - name: Publish to ts-nightly
-        if: contains(github.event.release.name, '1.0.') && contains(github.event.release.name, 'nightly')
-        run: npm publish --access public --tag ts-nightly
+        if: startsWith(github.event.release.name, '1.0.') && contains(github.event.release.name, 'nightly')
+        run: npm publish --access public --tag next
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       
-      # Publish with ts-next tag for regular 1.0.x releases
       - name: Publish to ts-next
-        if: contains(github.event.release.name, '1.0.') && !contains(github.event.release.name, 'nightly')
+        if: startsWith(github.event.release.name, '1.0.') && !contains(github.event.release.name, 'nightly')
         run: npm publish --access public --tag ts-next
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      
-      # Original stable release publish
+
       - name: Publish to stable
-        if: github.event.release.prerelease == false && !contains(github.event.release.name, '1.0.')
+        if: github.event.release.prerelease == false && !startsWith(github.event.release.name, '1.0.')
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       
-      # Original nightly release publish
       - name: Publish to nightly
-        if: github.event.release.prerelease == true && !contains(github.event.release.name, '1.0.')
-        run: npm publish --access public --tag nightly
+        if: github.event.release.prerelease == true && !startsWith(github.event.release.name, '1.0.')
+        run: npm publish --access public --tag next
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
