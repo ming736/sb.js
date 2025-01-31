@@ -31,25 +31,25 @@ jobs:
       - run: npm ci
       
       - name: Publish to ts-nightly
-        if: startsWith(github.event.release.name, '1.0.') && contains(github.event.release.name, 'nightly')
+        if: startsWith(github.event.release.name, 'v1.0.') && contains(github.event.release.name, 'nightly')
         run: npm publish --access public --tag next
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       
       - name: Publish to ts-next
-        if: startsWith(github.event.release.name, '1.0.') && !contains(github.event.release.name, 'nightly')
+        if: startsWith(github.event.release.name, 'v1.0.') && !contains(github.event.release.name, 'nightly')
         run: npm publish --access public --tag ts-next
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
       - name: Publish to stable
-        if: github.event.release.prerelease == false && !startsWith(github.event.release.name, '1.0.')
+        if: github.event.release.prerelease == false && !startsWith(github.event.release.name, 'v1.0.')
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       
       - name: Publish to nightly
-        if: github.event.release.prerelease == true && !startsWith(github.event.release.name, '1.0.')
+        if: github.event.release.prerelease == true && !startsWith(github.event.release.name, 'v1.0.')
         run: npm publish --access public --tag next
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
