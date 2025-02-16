@@ -1205,12 +1205,15 @@ export class ObjectStream {
             case 14: // Utf8
                 return this.stream.utf8(this.stream.uint32());
             case 11: // ByteArray
+                // @ts-ignore
                 return new Uint8Array(this.stream.arrayBuffer(this.stream.uint32()));
             case 12: // SoundBuffer
+                // @ts-ignore
                 return new Uint8Array(this.stream.arrayBuffer(this.stream.uint32() * 2));
             case 13: // Bitmap
+                // @ts-ignore
                 var a = new Uint8Array(this.stream.arrayBuffer(this.stream.uint32() * 4));
-                //@ts-expect-error
+                // @ts-expect-error
                 a.bitmap = true;
                 return a;
             case 20: // Array

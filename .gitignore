@@ -145,4 +145,8 @@ src/*.d.ts.map
 byte-stream.ts
 byte-primitives.ts
 
+website copy/
+website2/
+
 output.wav
+output.*

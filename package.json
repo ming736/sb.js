@@ -31,6 +31,7 @@
     "wav-converter": "^1.0.0"
   },
   "devDependencies": {
+    "@docusaurus/tsconfig": "^3.7.0",
     "@types/node": "^22.12.0",
     "jsdoc": "^4.0.4",
     "ts-node": "^10.9.2"

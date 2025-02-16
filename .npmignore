@@ -7,7 +7,9 @@ output.wav
 out/
 src/
 examples/
+website/
 .github/
 tsconfig.json
 copy.js
 index.html
+output.*
